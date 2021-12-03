@@ -7,16 +7,15 @@
     Date    : 03/12/2021
 */
 
-pragma solidity >=0.7.0<=0.9.0;
+pragma solidity >=0.7.0 <=0.9.0;
 
-import "./extensions/User.sol";
+import "./extensions/Topic.sol";
 import "./extensions/Post.sol";
 
-contract Twitter is PostContract {
-
+contract SocialNetwork is PostContract, TopicContract {
     address public admin;
 
-    modifier onlyAdmin {
+    modifier onlyAdmin() {
         require(msg.sender == admin);
         _;
     }
@@ -25,7 +24,7 @@ contract Twitter is PostContract {
         admin = msg.sender;
     }
 
-    function deactivatePost(uint number) public onlyAdmin returns (bool) {
+    function deactivatePost(uint256 number) public onlyAdmin returns (bool) {
         require(post[number].isPublished);
         post[number].isPublished = false;
         return true;
@@ -38,7 +37,11 @@ contract Twitter is PostContract {
         return true;
     }
 
-    function createAccountAsAdmin(address newUser, string memory nickname) public onlyAdmin returns (bool) {
+    function createAccountAsAdmin(address newUser, string memory nickname)
+        public
+        onlyAdmin
+        returns (bool)
+    {
         require(!user[newUser].isRegistered);
         user[newUser].nickname = nickname;
         user[newUser].isRegistered = true;
@@ -46,5 +49,15 @@ contract Twitter is PostContract {
         return true;
     }
 
+    function banTopic(bytes32 name) public onlyAdmin returns (bool) {
+        require(topic[name].isActive);
+        topic[name].isActive = false;
+        return true;
+    }
 
+    function unBanTopic(bytes32 name) public onlyAdmin returns (bool) {
+        require(!topic[name].isActive);
+        topic[name].isActive = true;
+        return true;
+    }
 }
