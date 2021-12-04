@@ -39,7 +39,7 @@ contract PostContract is UserContract {
         _;
     }
 
-    function createPost(string memory title, string memory content) public onlyActiveUser(msg.sender) returns (bool) {
+    function createPost(string memory title, string memory content) public onlyActiveUser returns (bool) {
         Post memory newPost;
         newPost.title = title;
         newPost.content = content;
@@ -52,21 +52,21 @@ contract PostContract is UserContract {
         return true;
     }
 
-    function likePost(uint number) public onlyActiveUser(msg.sender) onlyActivePost(number) returns (bool) {
+    function likePost(uint number) public onlyActiveUser onlyActivePost(number) returns (bool) {
         require(!postsLikedByUser[msg.sender][number]);
         postsLikedByUser[msg.sender][number] = true;
         postLikesCounter[number][msg.sender] = true;
         return true;
     }
 
-    function dislikePost(uint number) public onlyActiveUser(msg.sender) onlyActivePost(number) returns (bool) {
+    function dislikePost(uint number) public onlyActiveUser onlyActivePost(number) returns (bool) {
         require(postsLikedByUser[msg.sender][number]);
         delete postsLikedByUser[msg.sender][number];
         delete postLikesCounter[number][msg.sender];
         return true;
     }
 
-    function reportPost(uint number, string memory reason) public onlyActiveUser(msg.sender) onlyActivePost(number) returns (bool) {
+    function reportPost(uint number, string memory reason) public onlyActiveUser onlyActivePost(number) returns (bool) {
         PostReport memory report;
         report.author = post[number].author;
         report.postNumber = number;
